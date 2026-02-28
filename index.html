@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>חמ"ל אוכלוסייה - קדם | צוות ה-11</title>
+    <style>
+        :root { --bg: #050505; --panel: #111; --accent: #ff0000; --text: #eee; --kdm: #fbc02d; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Header */
+        header { background: #000; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--kdm); }
+        .logo { font-weight: 900; color: var(--kdm); font-size: 1.6rem; text-shadow: 0 0 10px rgba(251, 192, 45, 0.3); }
+        #clock { font-family: monospace; font-size: 1.6rem; color: #fff; background: #222; padding: 5px 15px; border-radius: 4px; border: 1px solid #444; }
+
+        /* Alert Overlay */
+        #alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,0,0,0.85); display: none; z-index: 1000; justify-content: center; align-items: center; animation: blink 0.8s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .alert-box { background: black; padding: 30px; border: 4px solid white; text-align: center; color: white; border-radius: 8px; box-shadow: 0 0 50px red; }
+
+        /* Dashboard Grid */
+        .dashboard { display: grid; grid-template-columns: 350px 1fr 350px; flex: 1; gap: 8px; padding: 8px; overflow: hidden; }
+        .col { display: flex; flex-direction: column; gap: 8px; }
+        .video-matrix { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; }
+        
+        .card { background: var(--panel); border: 1px solid #333; border-radius: 4px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        .card-label { background: rgba(0,0,0,0.9); color: var(--kdm); font-size: 11px; padding: 3px 8px; font-weight: bold; border-bottom: 1px solid #444; display: flex; justify-content: space-between; }
+        
+        iframe { width: 100%; height: 100%; border: none; background: #000; }
+
+        /* Event Log & Controls */
+        .log-container { flex: 1; display: flex; flex-direction: column; padding: 10px; gap: 10px; overflow: hidden; }
+        #log-list { flex: 1; overflow-y: auto; font-size: 0.9rem; color: #ccc; border: 1px solid #222; padding: 8px; background: #000; list-style: none; margin: 0; }
+        #log-list li { border-bottom: 1px solid #1a1a1a; padding: 6px 0; display: flex; gap: 10px; line-height: 1.4; }
+        .log-time { color: var(--kdm); font-weight: bold; font-family: monospace; }
+        
+        .log-input-area { display: flex; gap: 5px; background: #1a1a1a; padding: 5px; border-radius: 4px; }
+        input[type="text"] { flex: 1; background: #000; border: 1px solid #444; color: white; padding: 8px; border-radius: 3px; }
+        .btn-main { background: var(--kdm); border: none; padding: 8px 15px; font-weight: bold; cursor: pointer; border-radius: 3px; transition: 0.2s; }
+        .btn-main:hover { background: #ffd54f; }
+        
+        .log-actions { display: flex; gap: 5px; margin-top: 5px; }
+        .btn-sec { background: #333; color: #fff; border: 1px solid #444; padding: 5px 10px; font-size: 11px; cursor: pointer; border-radius: 3px; flex: 1; }
+        .btn-sec:hover { background: #444; }
+
+        /* Footer */
+        .footer-ticker { background: #000; height: 35px; border-top: 2px solid var(--kdm); display: flex; align-items: center; overflow: hidden; }
+        .ticker-text { flex: 1; white-space: nowrap; animation: scroll 60s linear infinite; color: #fff; font-size: 1.1rem; }
+        @keyframes scroll { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    </style>
+</head>
+<body>
+
+<div id="alert-overlay" onclick="this.style.display='none'">
+    <div class="alert-box">
+        <h1 style="font-size: 3.5rem; margin: 0;">צבע אדום!</h1>
+        <p>זיהוי אירוע אמת במערכת - פעל על פי הפרוטוקול</p>
+        <button onclick="this.parentElement.parentElement.style.display='none'" style="padding: 15px 30px; cursor: pointer; font-weight: bold; font-size: 1.2rem;">חזור לתצוגת חמ"ל</button>
+    </div>
+</div>
+
+<header>
+    <div class="logo">חמ"ל אוכלוסייה - קדם // HQ</div>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button onclick="document.getElementById('alert-overlay').style.display='flex'" style="background:none; border: 1px solid #444; color:#555; font-size:10px; cursor:pointer; border-radius: 3px;">TEST ALERT</button>
+        <div id="clock">00:00:00</div>
+    </div>
+</header>
+
+<div class="dashboard">
+    <div class="col">
+        <div class="card" style="flex: 2.5;">
+            <div class="card-label">פיקוד העורף - LIVE</div>
+            <iframe src="https://www.oref.org.il/12481-he/Pakar.aspx"></iframe>
+        </div>
+        <div class="card" style="flex: 1;">
+            <div class="card-label">מבזקי MivzakLive</div>
+            <iframe src="https://www.mivzaklive.co.il/live"></iframe>
+        </div>
+    </div>
+
+    <div class="col video-matrix">
+        <div class="card"><div class="card-label">כאן 11</div><iframe src="https://www.youtube.com/embed/live_stream?channel=UCKEImtWik1M1X5Y3x_fX0_w&autoplay=1&mute=1"></iframe></div>
+        <div class="card"><div class="card-label">N12 - חדשות 12</div><iframe src="https://www.youtube.com/embed/live_stream?channel=UCuO6H_r_pL6L-S769P0r18g&autoplay=1&mute=1"></iframe></div>
+        <div class="card"><div class="card-label">חדשות 13</div><iframe src="https://www.youtube.com/embed/live_stream?channel=UCvW8HlX6O_69uX-Ym6fOUnA&autoplay=1&mute=1"></iframe></div>
+        <div class="card"><div class="card-label">ערוץ 14</div><iframe src="https://www.youtube.com/embed/live_stream?channel=UCuO6H_r_pL6L-S769P0r18g&autoplay=1&mute=1"></iframe></div>
+    </div>
+
+    <div class="col">
+        <div class="card" style="flex: 1.5;">
+            <div class="card-label">
+                <span>יומן אירועים מבצעי</span>
+                <span style="color: #4caf50;">● LOGGING ACTIVE</span>
+            </div>
+            <div class="log-container">
+                <ul id="log-list"></ul>
+                <div class="log-input-area">
+                    <input type="text" id="log-input" placeholder="דיווח חדש..." onkeypress="if(event.key==='Enter') addLog()">
+                    <button class="btn-main" onclick="addLog()">הוסף</button>
+                </div>
+                <div class="log-actions">
+                    <button class="btn-sec" onclick="exportLog()">ייצוא CSV</button>
+                    <button class="btn-sec" onclick="clearLog()" style="color: #ff5252;">איפוס יומן</button>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="flex: 1;"><div class="card-label">תנועה ומצלמות מרכז</div><iframe src="https://www.ayalonhw.co.il/map/"></iframe></div>
+        <div class="card" style="flex: 0.8;"><div class="card-label">מכ"ם Windy</div><iframe src="https://www.windy.com/?32.085,34.782,10"></iframe></div>
+    </div>
+</div>
+
+<div class="footer-ticker">
+    <div class="ticker-text" id="dynamic-ticker">
+        +++ חמ"ל אוכלוסייה - קדם בתצורת מוכנות שיא +++ המערכת מאובטחת +++ עדכוני פיקוד העורף מסונכרנים +++
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('he-IL', { hour12: false });
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    const logList = document.getElementById('log-list');
+    const logInput = document.getElementById('log-input');
+
+    function loadLogs() {
+        const saved = JSON.parse(localStorage.getItem('hml_logs') || '[]');
+        logList.innerHTML = '';
+        saved.forEach(entry => appendToUI(entry.time, entry.text));
+    }
+
+    function addLog() {
+        if(!logInput.value) return;
+        const time = new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        const text = logInput.value;
+        appendToUI(time, text);
+        
+        const saved = JSON.parse(localStorage.getItem('hml_logs') || '[]');
+        saved.push({time, text});
+        localStorage.setItem('hml_logs', JSON.stringify(saved));
+        logInput.value = '';
+        logList.scrollTop = logList.scrollHeight;
+    }
+
+    function appendToUI(time, text) {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-msg">${text}</span>`;
+        logList.appendChild(li);
+    }
+
+    function exportLog() {
+        const saved = JSON.parse(localStorage.getItem('hml_logs') || '[]');
+        if(saved.length === 0) return alert("היומן ריק");
+        
+        let csvContent = "data:text/csv;charset=utf-8,Time,Event\n";
+        saved.forEach(e => { csvContent += `${e.time},"${e.text}"\n`; });
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `HML_KEDEM_LOG_${new Date().toLocaleDateString()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function clearLog() {
+        if(confirm("האם אתה בטוח שברצונך למחוק את כל יומן האירועים? פעולה זו אינה ניתנת לביטול.")) {
+            localStorage.removeItem('hml_logs');
+            loadLogs();
+        }
+    }
+
+    loadLogs();
+</script>
+</body>
+</html>
