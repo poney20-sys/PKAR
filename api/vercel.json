@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/api/alerts", "destination": "/api/oref-alerts.js" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' *" }
+      ]
+    }
+  ]
+}
