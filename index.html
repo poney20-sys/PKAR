@@ -2,107 +2,91 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>חמ"ל אוכלוסייה - קדם // HQ 2.0</title>
+    <title>חמ"ל אוכלוסייה - קדם | HQ 2.1</title>
     <style>
-        :root { --bg: #050505; --panel: #111; --accent: #fbc02d; --alert: #ff1744; --text: #eee; }
+        :root { --bg: #050505; --panel: #111; --accent: #fbc02d; --text: #eee; }
         body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Tactical Header */
-        header { background: #000; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); z-index: 100; }
-        .logo-group { display: flex; flex-direction: column; }
-        .logo { font-weight: 900; color: var(--accent); font-size: 1.6rem; letter-spacing: 1px; }
-        #clock { font-family: 'Courier New', monospace; font-size: 1.8rem; color: #fff; background: #222; padding: 5px 15px; border-radius: 4px; border: 1px solid #333; }
+        header { background: #000; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); }
+        .logo { font-weight: 900; color: var(--accent); font-size: 1.6rem; }
+        #clock { font-family: monospace; font-size: 1.8rem; color: #fff; background: #222; padding: 5px 15px; border-radius: 4px; border: 1px solid #333; }
 
-        /* Main Grid */
         .dashboard { display: grid; grid-template-columns: 350px 1fr 350px; flex: 1; gap: 8px; padding: 8px; overflow: hidden; }
         .col { display: flex; flex-direction: column; gap: 8px; }
         .video-matrix { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; }
         
-        /* Cards */
-        .card { background: var(--panel); border: 1px solid #222; border-radius: 4px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .card-label { background: rgba(0,0,0,0.9); color: var(--accent); font-size: 11px; padding: 4px 10px; font-weight: bold; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        .live-dot { height: 8px; width: 8px; background-color: #4caf50; border-radius: 50%; display: inline-block; margin-left: 5px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
+        .card { background: var(--panel); border: 1px solid #333; border-radius: 4px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        .card-label { background: rgba(0,0,0,0.9); color: var(--accent); font-size: 11px; padding: 5px 10px; font-weight: bold; border-bottom: 1px solid #444; display: flex; justify-content: space-between; }
+        
+        .empty-state { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; background: #080808; }
+        .btn-open { background: var(--accent); color: black; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; text-decoration: none; margin-top: 10px; font-size: 14px; }
+        
         iframe { width: 100%; height: 100%; border: none; background: #000; }
 
-        /* Tactical Log */
-        .log-area { flex: 1; display: flex; flex-direction: column; padding: 10px; background: #080808; font-size: 0.85rem; }
-        #log-display { flex: 1; overflow-y: auto; border: 1px solid #1a1a1a; padding: 5px; margin-bottom: 5px; color: #aaa; }
-        .log-entry { margin-bottom: 4px; border-bottom: 1px solid #111; padding-bottom: 2px; }
-        .log-ts { color: var(--accent); font-weight: bold; }
-        input { background: #1a1a1a; border: 1px solid #333; color: white; padding: 8px; border-radius: 3px; width: calc(100% - 16px); }
-
-        /* Alert Overlay */
-        #alert-screen { position: fixed; inset: 0; background: rgba(255,0,0,0.9); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; animation: alert-flash 0.5s infinite; }
-        @keyframes alert-flash { 0% { background: rgba(255,0,0,0.9); } 50% { background: rgba(150,0,0,0.9); } }
+        /* יומן אירועים */
+        .log-area { flex: 1; display: flex; flex-direction: column; padding: 10px; background: #080808; }
+        #log-display { flex: 1; overflow-y: auto; border: 1px solid #1a1a1a; padding: 5px; font-size: 12px; color: #888; }
+        input { background: #1a1a1a; border: 1px solid #333; color: white; padding: 8px; margin-top: 5px; border-radius: 3px; }
     </style>
 </head>
 <body>
 
-<div id="alert-screen" onclick="this.style.display='none'">
-    <h1 style="font-size: 5rem; color: white; margin: 0;">צבע אדום!</h1>
-    <p style="font-size: 2rem; color: white;">זיהוי התראה במרחב - פעל בהתאם להנחיות</p>
-    <button style="padding: 15px 30px; font-weight: bold; cursor: pointer;">סגור וחזור לחמ"ל</button>
-</div>
-
 <header>
-    <div class="logo-group">
-        <div class="logo">חמ"ל אוכלוסייה - קדם</div>
-        <div style="font-size: 10px; color: #666; font-weight: bold;">OPERATIONAL COMMAND UNIT 11</div>
-    </div>
-    <div style="display:flex; gap: 15px; align-items: center;">
-        <button onclick="document.getElementById('alert-screen').style.display='flex'" style="background:#222; color:#555; border:1px solid #333; padding:5px; font-size:10px; cursor:pointer;">בדיקת צופר</button>
-        <div id="clock">00:00:00</div>
-    </div>
+    <div class="logo">חמ"ל אוכלוסייה - קדם</div>
+    <div id="clock">00:00:00</div>
 </header>
 
 <div class="dashboard">
     <div class="col">
         <div class="card" style="flex: 2;">
-            <div class="card-label"><span>פיקוד העורף - מפה חיה</span><span class="live-dot"></span></div>
-            <iframe src="https://www.oref.org.il/12481-he/Pakar.aspx"></iframe>
+            <div class="card-label">פיקוד העורף - LIVE</div>
+            <div class="empty-state">
+                <p>עקב הגבלות אבטחה של פיקוד העורף,<br>יש לפתוח את המפה בחלון נפרד ולמקם כאן.</p>
+                <a href="https://www.oref.org.il/12481-he/Pakar.aspx" target="_blank" class="btn-open">פתח מפת התראות</a>
+            </div>
         </div>
         <div class="card" style="flex: 1;">
-            <div class="card-label">יומן מבצעי - קדם</div>
+            <div class="card-label">יומן מבצעי</div>
             <div class="log-area">
                 <div id="log-display"></div>
-                <input type="text" id="log-in" placeholder="הקלד דיווח..." onkeypress="if(event.key==='Enter') pushLog()">
+                <input type="text" id="log-in" placeholder="דיווח מהיר..." onkeypress="if(event.key==='Enter') pushLog()">
             </div>
         </div>
     </div>
 
     <div class="col video-matrix">
         <div class="card">
-            <div class="card-label">כאן 11 - שידור חי</div>
+            <div class="card-label">כאן 11 - LIVE</div>
             <iframe src="https://www.youtube.com/embed/live_stream?channel=UCKEImtWik1M1X5Y3x_fX0_w&autoplay=1&mute=1"></iframe>
         </div>
         <div class="card">
-            <div class="card-label">חדשות 12 - N12 (ערוץ רשמי)</div>
-            <iframe src="https://www.youtube.com/embed/live_stream?channel=UCuO6H_r_pL6L-S769P0r18g&autoplay=1&mute=1"></iframe>
+            <div class="card-label">חדשות 12 - N12</div>
+            <div class="empty-state">
+                <p>שידור חי N12</p>
+                <a href="https://www.mako.co.il/mako-vod-live-tv/VOD-6540b8dcb64fd31006.htm" target="_blank" class="btn-open">פתח שידור חי 12</a>
+            </div>
         </div>
         <div class="card">
-            <div class="card-label">חדשות 13 - שידור חי</div>
-            <iframe src="https://www.youtube.com/embed/live_stream?channel=UCvW8HlX6O_69uX-Ym6fOUnA&autoplay=1&mute=1"></iframe>
+            <div class="card-label">חדשות 13 - LIVE</div>
+            <div class="empty-state">
+                <p>שידור חי רשת 13</p>
+                <a href="https://13tv.co.il/allshows/2010263/" target="_blank" class="btn-open">פתח שידור חי 13</a>
+            </div>
         </div>
         <div class="card">
-            <div class="card-label">ערוץ 14 - שידור חי</div>
+            <div class="card-label">ערוץ 14 - LIVE</div>
             <iframe src="https://www.youtube.com/embed/live_stream?channel=UCuO6H_r_pL6L-S769P0r18g&autoplay=1&mute=1"></iframe>
         </div>
     </div>
 
     <div class="col">
-        <div class="card" style="flex: 1.2;">
-            <div class="card-label">מצלמות נתיבי ישראל / חופים</div>
+        <div class="card" style="flex: 1.5;">
+            <div class="card-label">מצלמות נתיבי ישראל</div>
             <iframe src="https://www.ayalonhw.co.il/map/"></iframe>
         </div>
-        <div class="card" style="flex: 1;">
-            <div class="card-label">מכ"ם רוחות - Windy</div>
-            <iframe src="https://www.windy.com/?32.085,34.782,10&menu=0&share=0"></iframe>
-        </div>
-        <div class="card" style="flex: 0.8;">
-            <div class="card-label">מבזקי MivzakLive</div>
-            <iframe src="https://www.mivzaklive.co.il/live"></iframe>
+        <div class="card" style="flex: 1.5;">
+            <div class="card-label">מכ"ם רוחות (Windy)</div>
+            <iframe src="https://www.windy.com/?32.085,34.782,10&menu=0"></iframe>
         </div>
     </div>
 </div>
@@ -111,14 +95,11 @@
     function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString('he-IL', { hour12: false }); }
     setInterval(updateClock, 1000); updateClock();
 
-    const logDisp = document.getElementById('log-display');
-    const logIn = document.getElementById('log-in');
     function pushLog() {
+        const logDisp = document.getElementById('log-display');
+        const logIn = document.getElementById('log-in');
         if(!logIn.value) return;
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        div.innerHTML = `<span class="log-ts">[${new Date().toLocaleTimeString('he-IL')}]</span> ${logIn.value}`;
-        logDisp.appendChild(div);
+        logDisp.innerHTML += `<div><span style="color:var(--accent)">[${new Date().toLocaleTimeString()}]</span> ${logIn.value}</div>`;
         logIn.value = '';
         logDisp.scrollTop = logDisp.scrollHeight;
     }
